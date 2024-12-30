@@ -1,0 +1,16 @@
+version: 1
+
+tasks:
+  build-hello-world:
+    cmd: tinygo build --target=wasip2 --wit-package ../../wit --wit-world octabot -o hello-world.wasm
+    dir: ./examples/hello-world
+
+  build-http:
+    cmd: tinygo build --target=wasip2 --wit-package ../../wit --wit-world octabot -o http.wasm
+    dir: ./examples/http
+
+  generate-bindings:
+    cmd: go generate
+
+  update-wit-deps:
+    cmd: wit-deps update
