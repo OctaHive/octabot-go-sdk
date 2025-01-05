@@ -8,13 +8,18 @@ import (
 
 // Exports represents the caller-defined exports from "octahive:octabot/plugin@0.1.0".
 var Exports struct {
+	// Load represents the caller-defined, exported function "load".
+	//
+	//	load: func() -> metadata
+	Load func() (result Metadata)
+
 	// Init represents the caller-defined, exported function "init".
 	//
-	//	init: func() -> metadata
-	Init func() (result Metadata)
+	//	init: func(config: string) -> result<_, error>
+	Init func(config string) (result cm.Result[Error, struct{}, Error])
 
 	// Process represents the caller-defined, exported function "process".
 	//
-	//	process: func(config: string, payload: string) -> result<list<action>, error>
-	Process func(config string, payload string) (result cm.Result[ErrorShape, cm.List[Action], Error])
+	//	process: func(payload: string) -> result<list<plugin-result>, error>
+	Process func(payload string) (result cm.Result[ErrorShape, cm.List[PluginResult], Error])
 }

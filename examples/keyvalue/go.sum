@@ -1,0 +1,4 @@
+go.bytecodealliance.org v0.5.0 h1:ywhCpF0JdqGkqct5JqSY1Me8lz001UIJXUaCSS32cew=
+go.bytecodealliance.org v0.5.0/go.mod h1:8kYTSxmQr8DU3dKOKCOHH1Ap1gWX/61qlFSbIuIno2Q=
+go.bytecodealliance.org/cm v0.1.0 h1:78Rk4d5rgir5Hm+LMFpDWhjmFBWrKDFPSKUwDBj+nwo=
+go.bytecodealliance.org/cm v0.1.0/go.mod h1:NZ2UT0DyGhBfpIPOxPMCuG6g1YTR4YF3xweD7mHX5VQ=

@@ -27,12 +27,16 @@ var pluginMetadata = plugin.Metadata{
 }
 
 func init() {
-	plugin.Exports.Init = func() plugin.Metadata {
+	plugin.Exports.Load = func() plugin.Metadata {
 		return pluginMetadata
 	}
 
-	plugin.Exports.Process = func(config string, payload string) (result cm.Result[plugin.ErrorShape, cm.List[plugin.Action], plugin.Error]) {
-		actions := []plugin.Action{}
+	plugin.Exports.Init = func(config string) (result cm.Result[plugin.Error, struct{}, plugin.Error]) {
+		return cm.OK[cm.Result[plugin.Error, struct{}, plugin.Error]](struct{}{})
+	}
+
+	plugin.Exports.Process = func(payload string) (result cm.Result[plugin.ErrorShape, cm.List[plugin.PluginResult], plugin.Error]) {
+		actions := []plugin.PluginResult{}
 
 		req, err := http.NewRequest(http.MethodGet, "https://dogapi.dog/api/v2/breeds", http.NoBody)
 		if err != nil {
@@ -53,7 +57,7 @@ func init() {
 		fmt.Printf("Status: %d\n", res.StatusCode)
 		fmt.Printf("Body: %s\n", string(resBody))
 
-		return cm.OK[cm.Result[plugin.ErrorShape, cm.List[plugin.Action], plugin.Error]](cm.ToList(actions))
+		return cm.OK[cm.Result[plugin.ErrorShape, cm.List[plugin.PluginResult], plugin.Error]](cm.ToList(actions))
 	}
 }
 

@@ -8,20 +8,28 @@ import (
 
 // This file contains wasmimport and wasmexport declarations for "octahive:octabot@0.1.0".
 
+//go:wasmexport octahive:octabot/plugin@0.1.0#load
+//export octahive:octabot/plugin@0.1.0#load
+func wasmexport_Load() (result *Metadata) {
+	result_ := Exports.Load()
+	result = &result_
+	return
+}
+
 //go:wasmexport octahive:octabot/plugin@0.1.0#init
 //export octahive:octabot/plugin@0.1.0#init
-func wasmexport_Init() (result *Metadata) {
-	result_ := Exports.Init()
+func wasmexport_Init(config0 *uint8, config1 uint32) (result *cm.Result[Error, struct{}, Error]) {
+	config := cm.LiftString[string]((*uint8)(config0), (uint32)(config1))
+	result_ := Exports.Init(config)
 	result = &result_
 	return
 }
 
 //go:wasmexport octahive:octabot/plugin@0.1.0#process
 //export octahive:octabot/plugin@0.1.0#process
-func wasmexport_Process(config0 *uint8, config1 uint32, payload0 *uint8, payload1 uint32) (result *cm.Result[ErrorShape, cm.List[Action], Error]) {
-	config := cm.LiftString[string]((*uint8)(config0), (uint32)(config1))
+func wasmexport_Process(payload0 *uint8, payload1 uint32) (result *cm.Result[ErrorShape, cm.List[PluginResult], Error]) {
 	payload := cm.LiftString[string]((*uint8)(payload0), (uint32)(payload1))
-	result_ := Exports.Process(config, payload)
+	result_ := Exports.Process(payload)
 	result = &result_
 	return
 }

@@ -7,6 +7,12 @@ import (
 	"unsafe"
 )
 
+// TaskDataShape is used for storage in variant or result types.
+type TaskDataShape struct {
+	_     cm.HostLayout
+	shape [unsafe.Sizeof(TaskData{})]byte
+}
+
 // ErrorShape is used for storage in variant or result types.
 type ErrorShape struct {
 	_     cm.HostLayout

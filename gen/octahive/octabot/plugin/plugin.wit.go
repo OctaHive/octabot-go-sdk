@@ -7,17 +7,96 @@ import (
 	"go.bytecodealliance.org/cm"
 )
 
-// Action represents the record "octahive:octabot/plugin@0.1.0#action".
+// ActionData represents the record "octahive:octabot/plugin@0.1.0#action-data".
 //
 // Action
 //
-//	record action {
+//	record action-data {
 //		name: string,
+//		payload: string,
 //	}
-type Action struct {
+type ActionData struct {
 	_ cm.HostLayout
 	// The name of the action
 	Name string
+
+	// Action payload
+	Payload string
+}
+
+// TaskData represents the record "octahive:octabot/plugin@0.1.0#task-data".
+//
+// Task
+//
+//	record task-data {
+//		name: string,
+//		kind: string,
+//		project-code: string,
+//		external-id: string,
+//		external-modified-at: u32,
+//		start-at: u32,
+//		options: string,
+//	}
+type TaskData struct {
+	_ cm.HostLayout
+	// Task name
+	Name string
+
+	// Type of task
+	Kind string
+
+	// Project code
+	ProjectCode string
+
+	// External task id
+	ExternalID string
+
+	// External task modified time
+	ExternalModifiedAt uint32
+
+	// Start task at
+	StartAt uint32
+
+	// Task options
+	Options string
+}
+
+// PluginResult represents the variant "octahive:octabot/plugin@0.1.0#plugin-result".
+//
+//	variant plugin-result {
+//		action(action-data),
+//		task(task-data),
+//	}
+type PluginResult cm.Variant[uint8, TaskDataShape, ActionData]
+
+// PluginResultAction returns a [PluginResult] of case "action".
+func PluginResultAction(data ActionData) PluginResult {
+	return cm.New[PluginResult](0, data)
+}
+
+// Action returns a non-nil *[ActionData] if [PluginResult] represents the variant case "action".
+func (self *PluginResult) Action() *ActionData {
+	return cm.Case[ActionData](self, 0)
+}
+
+// PluginResultTask returns a [PluginResult] of case "task".
+func PluginResultTask(data TaskData) PluginResult {
+	return cm.New[PluginResult](1, data)
+}
+
+// Task returns a non-nil *[TaskData] if [PluginResult] represents the variant case "task".
+func (self *PluginResult) Task() *TaskData {
+	return cm.Case[TaskData](self, 1)
+}
+
+var stringsPluginResult = [2]string{
+	"action",
+	"task",
+}
+
+// String implements [fmt.Stringer], returning the variant case name of v.
+func (v PluginResult) String() string {
+	return stringsPluginResult[v.Tag()]
 }
 
 // Metadata represents the record "octahive:octabot/plugin@0.1.0#metadata".
@@ -51,23 +130,122 @@ type Metadata struct {
 // Errors related to interacting with Plugin
 //
 //	variant error {
+//		parse-bot-config(string),
+//		parse-action-payload(string),
+//		send-http-request(string),
+//		parse-response(string),
+//		open-storage(string),
+//		storage-operation(string),
+//		config-lock(string),
 //		other(string),
 //	}
 type Error cm.Variant[uint8, string, string]
+
+// ErrorParseBotConfig returns a [Error] of case "parse-bot-config".
+//
+// TODO: add other errors that make sense
+// Parse bot config error
+func ErrorParseBotConfig(data string) Error {
+	return cm.New[Error](0, data)
+}
+
+// ParseBotConfig returns a non-nil *[string] if [Error] represents the variant case "parse-bot-config".
+func (self *Error) ParseBotConfig() *string {
+	return cm.Case[string](self, 0)
+}
+
+// ErrorParseActionPayload returns a [Error] of case "parse-action-payload".
+//
+// Parse action payload error
+func ErrorParseActionPayload(data string) Error {
+	return cm.New[Error](1, data)
+}
+
+// ParseActionPayload returns a non-nil *[string] if [Error] represents the variant case "parse-action-payload".
+func (self *Error) ParseActionPayload() *string {
+	return cm.Case[string](self, 1)
+}
+
+// ErrorSendHTTPRequest returns a [Error] of case "send-http-request".
+//
+// Send http request error
+func ErrorSendHTTPRequest(data string) Error {
+	return cm.New[Error](2, data)
+}
+
+// SendHTTPRequest returns a non-nil *[string] if [Error] represents the variant case "send-http-request".
+func (self *Error) SendHTTPRequest() *string {
+	return cm.Case[string](self, 2)
+}
+
+// ErrorParseResponse returns a [Error] of case "parse-response".
+//
+// Parse http response error
+func ErrorParseResponse(data string) Error {
+	return cm.New[Error](3, data)
+}
+
+// ParseResponse returns a non-nil *[string] if [Error] represents the variant case "parse-response".
+func (self *Error) ParseResponse() *string {
+	return cm.Case[string](self, 3)
+}
+
+// ErrorOpenStorage returns a [Error] of case "open-storage".
+//
+// Open keyvalue storage error
+func ErrorOpenStorage(data string) Error {
+	return cm.New[Error](4, data)
+}
+
+// OpenStorage returns a non-nil *[string] if [Error] represents the variant case "open-storage".
+func (self *Error) OpenStorage() *string {
+	return cm.Case[string](self, 4)
+}
+
+// ErrorStorageOperation returns a [Error] of case "storage-operation".
+//
+// Storage operation error
+func ErrorStorageOperation(data string) Error {
+	return cm.New[Error](5, data)
+}
+
+// StorageOperation returns a non-nil *[string] if [Error] represents the variant case "storage-operation".
+func (self *Error) StorageOperation() *string {
+	return cm.Case[string](self, 5)
+}
+
+// ErrorConfigLock returns a [Error] of case "config-lock".
+//
+// Plugin config lock error
+func ErrorConfigLock(data string) Error {
+	return cm.New[Error](6, data)
+}
+
+// ConfigLock returns a non-nil *[string] if [Error] represents the variant case "config-lock".
+func (self *Error) ConfigLock() *string {
+	return cm.Case[string](self, 6)
+}
 
 // ErrorOther returns a [Error] of case "other".
 //
 // Some other error occurred.
 func ErrorOther(data string) Error {
-	return cm.New[Error](0, data)
+	return cm.New[Error](7, data)
 }
 
 // Other returns a non-nil *[string] if [Error] represents the variant case "other".
 func (self *Error) Other() *string {
-	return cm.Case[string](self, 0)
+	return cm.Case[string](self, 7)
 }
 
-var stringsError = [1]string{
+var stringsError = [8]string{
+	"parse-bot-config",
+	"parse-action-payload",
+	"send-http-request",
+	"parse-response",
+	"open-storage",
+	"storage-operation",
+	"config-lock",
 	"other",
 }
 
