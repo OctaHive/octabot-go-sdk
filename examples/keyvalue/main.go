@@ -28,23 +28,22 @@ func init() {
 	plugin.Exports.Process = func(payload string) (result cm.Result[plugin.ErrorShape, cm.List[plugin.PluginResult], plugin.Error]) {
 		actions := []plugin.PluginResult{}
 
-		res := store.Open("")
-		if res.IsErr() {
-			return cm.Err[cm.Result[plugin.ErrorShape, cm.List[plugin.PluginResult], plugin.Error]](plugin.Error(*res.Err()))
+		bucket, err, isErr := store.Open("").Result()
+		if isErr {
+			return cm.Err[cm.Result[plugin.ErrorShape, cm.List[plugin.PluginResult], plugin.Error]](plugin.Error(err))
 		}
 
-		bucket := res.OK()
 		r := bucket.Set("key", cm.ToList([]uint8("value")))
 		if r.IsErr() {
 			return cm.Err[cm.Result[plugin.ErrorShape, cm.List[plugin.PluginResult], plugin.Error]](plugin.Error(*r.Err()))
 		}
 
-		val := bucket.Get("key")
-		if val.IsErr() {
-			return cm.Err[cm.Result[plugin.ErrorShape, cm.List[plugin.PluginResult], plugin.Error]](plugin.Error(*val.Err()))
+		val, err, isErr := bucket.Get("key").Result()
+		if isErr {
+			return cm.Err[cm.Result[plugin.ErrorShape, cm.List[plugin.PluginResult], plugin.Error]](plugin.Error(err))
 		}
 
-		fmt.Println(string(val.OK().Value().Slice()))
+		fmt.Println(string(val.Value().Slice()))
 
 		return cm.OK[cm.Result[plugin.ErrorShape, cm.List[plugin.PluginResult], plugin.Error]](cm.ToList(actions))
 	}
