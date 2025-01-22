@@ -2,19 +2,19 @@ version: 1
 
 tasks:
   build-hello-world:
-    cmd: tinygo build --target=wasip2 --wit-package ../../wit --wit-world octabot -o hello-world.wasm
+    shell: tinygo build --target=wasip2 --wit-package ../../wit --wit-world octabot -o hello-world.wasm
     dir: ./examples/hello-world
 
   build-http:
-    cmd: tinygo build --target=wasip2 --wit-package ../../wit --wit-world octabot -o http.wasm
+    shell: tinygo build --target=wasip2 --wit-package ../../wit --wit-world octabot -o http.wasm
     dir: ./examples/http
 
   build-keyvalue:
-    cmd: tinygo build --target=wasip2 --wit-package ../../wit --wit-world octabot -o keyvalue.wasm
+    shell: tinygo build --target=wasip2 --wit-package ../../wit --wit-world octabot -o keyvalue.wasm
     dir: ./examples/keyvalue
 
   generate-bindings:
-    cmd: go generate
+    shell: go generate
 
   update-wit-deps:
-    cmd: wit-deps update
+    shell: wit-deps update
